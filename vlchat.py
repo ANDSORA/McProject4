@@ -9,6 +9,8 @@ import serial
 import time
 import threading
 import parse
+import json
+import getopt
 
 
 class VlcReceiver(threading.Thread):
@@ -29,23 +31,26 @@ class VlcReceiver(threading.Thread):
 
 
 class VlcSender(threading.Thread):
-    def __init__(self, ser):
+    def __init__(self, ser, destination):
         threading.Thread.__init__(self)
         self.s = ser
+        self.d = destination
 
     def run(self):
         while True:
             line = input()
             print(line)
-            s.write(("m["+line+"\0,AB]\n").encode("ascii"))
+            s.write(("m["+line+"\0,"+self.d+"]\n").encode("ascii"))
             time.sleep(0.2)
 
 
-s = serial.Serial('/dev/tty.usbmodem1411', 115200, timeout=1)  # opens a serial port (resets the device!)
+getopt.getopt()
+config = json.load(open("config.JSON"))
+s = serial.Serial(config["path"], 115200, timeout=1)  # opens a serial port (resets the device!)
 time.sleep(2)  # give the device some time to startup (2 seconds)
 
 # write to the device’s serial port
-s.write(b"a[CD]\n")  # set the device address to AB
+s.write(("a["+config["address"]+"]\n").encode("ascii"))  # set the device address to AB
 time.sleep(0.1)  # wait for settings to be applied
 
 s.write(b"c[1,0,5]\n")  # set number of retransmissions to 5
@@ -54,12 +59,10 @@ time.sleep(0.1)  # wait for settings to be applied
 s.write(b"c[0,1,30]\n")  # set FEC threshold to 30 (apply FEC to packets with payload >= 30)
 time.sleep(0.1)  # wait for settings to be applied
 
-# s.write(b"m[hello world!\0,AB]\n")  # send message to device with address CD
+receiver_thread = VlcReceiver(s)
+sender_thread = VlcSender(s, config["destination"])
 
-sender_thread = VlcReceiver(s)
 sender_thread.start()
-
-receiver_thread = VlcSender(s)
 receiver_thread.start()
 
 sender_thread.join()
