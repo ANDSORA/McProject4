@@ -8,7 +8,7 @@ Created on Fri Nov 18 16:07:17 2016
 import serial
 import time
 import threading
-import parse
+import evaluator
 
 print("Here is VLchat!")
 #open the Arouino
@@ -39,6 +39,7 @@ Ser.write(b"c[0,1,30]\n")
 time.sleep(0.1)
 print(Ser.readline().decode("utf-8"))"""
 
+myeval = evaluator()
 
 class VlcReceiver(threading.Thread):
     def __init__(self, ser):
@@ -54,7 +55,7 @@ class VlcReceiver(threading.Thread):
                 if event_type == 'm':
                     print(content)
                 elif event_type == "s":
-                    parse.parse(content)
+                    myeval.update(content)
 
 
 class VlcSender(threading.Thread):
