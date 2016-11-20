@@ -8,14 +8,9 @@ Created on Fri Nov 18 16:07:17 2016
 import serial
 import time
 import threading
-<<<<<<< HEAD
-from evaluator import evaluator
-=======
-import parse
 import json
 import getopt
-import evaluator
->>>>>>> 2285cdfcbaab32fff981bb46e17431708e08aa50
+from evaluator import evaluator
 
 print("Here is VLchat!")
 # open the Arouino
@@ -75,17 +70,6 @@ class VlcSender(threading.Thread):
         while True:
             line = input()
             print(line)
-<<<<<<< HEAD
-            s.write(("m["+line+"\0,CD]\n").encode("ascii"))
-            time.sleep(0.2)
-
-
-s = serial.Serial('/dev/ttyACM0', 115200, timeout=1)  # opens a serial port (resets the device!)
-time.sleep(2)  # give the device some time to startup (2 seconds)
-
-# write to the device’s serial port
-s.write(b"a[AB]\n")  # set the device address to AB
-=======
             s.write(("m["+line+"\0,"+self.d+"]\n").encode("ascii"))
             time.sleep(0.2)
 
@@ -96,7 +80,6 @@ time.sleep(2)  # give the device some time to startup (2 seconds)
 
 # write to the device’s serial port
 s.write(("a["+config["address"]+"]\n").encode("ascii"))  # set the device address to AB
->>>>>>> 2285cdfcbaab32fff981bb46e17431708e08aa50
 time.sleep(0.1)  # wait for settings to be applied
 
 s.write(b"c[1,0,5]\n")  # set number of retransmissions to 5
