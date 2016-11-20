@@ -8,10 +8,17 @@ Created on Fri Nov 18 16:07:17 2016
 import serial
 import time
 import threading
+<<<<<<< HEAD
 from evaluator import evaluator
+=======
+import parse
+import json
+import getopt
+import evaluator
+>>>>>>> 2285cdfcbaab32fff981bb46e17431708e08aa50
 
 print("Here is VLchat!")
-#open the Arouino
+# open the Arouino
 """
 while True:
     try:
@@ -24,7 +31,7 @@ while True:
 Ser = serial.Serial("/dev/ttyACM0", 115200, timeout = 1)
 time.sleep(2)"""
 
-#configure the Arouino
+# configure the Arouino
 """Addr = input("give the address: ")
 Ser.write(("a[" + Addr + "]\n").encode("ascii"))
 Ser.write(b"a[AB]\n")
@@ -59,14 +66,16 @@ class VlcReceiver(threading.Thread):
 
 
 class VlcSender(threading.Thread):
-    def __init__(self, ser):
+    def __init__(self, ser, destination):
         threading.Thread.__init__(self)
         self.s = ser
+        self.d = destination
 
     def run(self):
         while True:
             line = input()
             print(line)
+<<<<<<< HEAD
             s.write(("m["+line+"\0,CD]\n").encode("ascii"))
             time.sleep(0.2)
 
@@ -76,6 +85,18 @@ time.sleep(2)  # give the device some time to startup (2 seconds)
 
 # write to the device’s serial port
 s.write(b"a[AB]\n")  # set the device address to AB
+=======
+            s.write(("m["+line+"\0,"+self.d+"]\n").encode("ascii"))
+            time.sleep(0.2)
+
+
+config = json.load(open("config.JSON"))
+s = serial.Serial(config["path"], 115200, timeout=1)  # opens a serial port (resets the device!)
+time.sleep(2)  # give the device some time to startup (2 seconds)
+
+# write to the device’s serial port
+s.write(("a["+config["address"]+"]\n").encode("ascii"))  # set the device address to AB
+>>>>>>> 2285cdfcbaab32fff981bb46e17431708e08aa50
 time.sleep(0.1)  # wait for settings to be applied
 
 s.write(b"c[1,0,5]\n")  # set number of retransmissions to 5
@@ -84,12 +105,10 @@ time.sleep(0.1)  # wait for settings to be applied
 s.write(b"c[0,1,30]\n")  # set FEC threshold to 30 (apply FEC to packets with payload >= 30)
 time.sleep(0.1)  # wait for settings to be applied
 
-# s.write(b"m[hello world!\0,AB]\n")  # send message to device with address CD
+receiver_thread = VlcReceiver(s)
+sender_thread = VlcSender(s, config["destination"])
 
-sender_thread = VlcReceiver(s)
 sender_thread.start()
-
-receiver_thread = VlcSender(s)
 receiver_thread.start()
 
 sender_thread.join()

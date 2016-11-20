@@ -1,0 +1,5 @@
+{
+  "address": "AB",
+  "destination": "CD",
+  "path": "/dev/ttyACM0"
+}
