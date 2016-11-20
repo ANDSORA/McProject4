@@ -70,7 +70,6 @@ class VlcSender(threading.Thread):
     def run(self):
         while True:
             line = input()
-            print(line)
             s.write(("m["+line+"\0,"+self.d+"]\n").encode("ascii"))
             time.sleep(0.2)
 
