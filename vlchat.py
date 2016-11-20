@@ -55,7 +55,7 @@ class VlcReceiver(threading.Thread):
                 content = received[2:-1]
                 if event_type == 'm':
                     contents = content.split(",")
-                    if len(contents) == 3 and contents[0] == "D":
+                    if len(contents) == 3 and content[0] == "R" and contents[1] == "D":
                         print(contents[2])
                 elif event_type == "s":
                     myeval.update(content)
