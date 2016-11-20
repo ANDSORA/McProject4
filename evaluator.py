@@ -40,7 +40,7 @@ class parser(object):
 
 class evaluator(object):
     def __init__(self):
-        self.count = 0
+        self.count = 0.0
         self.totaltime = 0.0
         self.totalsize = 0.0
         self.waitqueue = {}
@@ -48,6 +48,7 @@ class evaluator(object):
         self.delays = []
         
     def update(self, smassage):
+        print("smassage = " + smassage)
         newparser = parser(smassage)
         if newparser.mode == 'T' and newparser.stype != 'A':
             self.waitqueue[newparser.seq] = newparser
@@ -56,12 +57,15 @@ class evaluator(object):
             if oldparser == None:
                 print("Get a A, but Can't find a corresponding T!")
                 sys.exit()
-            self.count += 1
-            self.totalsize += oldparser.size
-            self.totaltime += newparser.stime - oldparser.stime
-            self.thrps += self.totalsize / self.totaltime
-            self.delays += self.totaltime / self.count
+            print("Seq %f success!" % newparser.seq)
+            print("size = %f, time = %f" % (oldparser.size, newparser.stime - oldparser.dispatch))
+            self.count += 1.0
+            self.totalsize += oldparser.size / 128.0
+            self.totaltime += newparser.stime - oldparser.dispatch
+            self.thrps.append(self.totalsize / self.totaltime * 1000.0)
+            self.delays.append(self.totaltime / self.count)
             self.waitqueue.pop(newparser.seq, None)
+        print("Update is done!\n")
     
     def writeToFile(self):
         # write delay
