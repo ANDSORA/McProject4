@@ -44,6 +44,8 @@ class evaluator(object):
         self.totaltime = 0.0
         self.totalsize = 0.0
         self.waitqueue = {}
+        self.thrps = []
+        self.delays = []
         
     def update(self, smassage):
         newparser = parser(smassage)
@@ -57,9 +59,18 @@ class evaluator(object):
             self.count += 1
             self.totalsize += oldparser.size
             self.totaltime += newparser.stime - oldparser.stime
+            self.thrps += self.totalsize / self.totaltime
+            self.delays += self.totaltime / self.count
+            self.waitqueue.pop(newparser.seq, None)
     
-    def thrp(self):
-        return self.totalsize / self.totaltime
-        
-    def delay(self):
-        return self.totaltime / self.count
+    def writeToFile(self):
+        # write delay
+        fdelay = open("delay.txt", "w")
+        for item in self.delays:
+            fdelay.write("%s\n" % item)
+        fdelay.close()
+        # write thrp
+        fthrp = open("thrp.txt", "w")
+        for item in self.thrps:
+            fthrp.write("%s\n" % item)
+        fthrp.close()
