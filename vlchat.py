@@ -9,7 +9,6 @@ import serial
 import time
 import threading
 import json
-import getopt
 from evaluator import evaluator
 
 print("Here is VLchat!")
@@ -55,7 +54,9 @@ class VlcReceiver(threading.Thread):
                 event_type = received[0]
                 content = received[2:-1]
                 if event_type == 'm':
-                    print(content)
+                    contents = content.split(",")
+                    if len(contents) == 3 and contents[0] == "D":
+                        print(contents[2])
                 elif event_type == "s":
                     myeval.update(content)
 
