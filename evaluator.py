@@ -12,7 +12,7 @@ print("Here is Evalutor.")
 
 class parser(object):
     def __init__(self, smassage):
-        slist = smassage[2:-2].split(',')
+        slist = smassage.split(',')
         self.mode = slist[0]
         self.stype = slist[1]
         (self.src,self.dest) = slist[2].split('->')
@@ -38,7 +38,7 @@ class parser(object):
         print(self.dispatch)
         print(self.stime)
 
-class evaluator():
+class evaluator(object):
     def __init__(self):
         self.count = 0
         self.totaltime = 0.0
