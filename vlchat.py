@@ -11,7 +11,38 @@ import threading
 import parse
 import json
 import getopt
+import evaluator
 
+print("Here is VLchat!")
+# open the Arouino
+"""
+while True:
+    try:
+        Sername = input("tell me your name: ")
+        Ser = serial.Serial(Sername, 115200, timeout = 1)
+        break
+    except:
+        print("Ooops, invalid serial portname!")
+#give Arouino some time to init itself
+Ser = serial.Serial("/dev/ttyACM0", 115200, timeout = 1)
+time.sleep(2)"""
+
+# configure the Arouino
+"""Addr = input("give the address: ")
+Ser.write(("a[" + Addr + "]\n").encode("ascii"))
+Ser.write(b"a[AB]\n")
+time.sleep(0.1)
+print(Ser.readline().decode("utf-8"))
+
+Ser.write(b"c[1,0,5]\n")
+time.sleep(0.1)
+print(Ser.readline().decode("utf-8"))
+
+Ser.write(b"c[0,1,30]\n")
+time.sleep(0.1)
+print(Ser.readline().decode("utf-8"))"""
+
+myeval = evaluator()
 
 class VlcReceiver(threading.Thread):
     def __init__(self, ser):
@@ -27,7 +58,7 @@ class VlcReceiver(threading.Thread):
                 if event_type == 'm':
                     print(content)
                 elif event_type == "s":
-                    parse.parse(content)
+                    myeval.update(content)
 
 
 class VlcSender(threading.Thread):
