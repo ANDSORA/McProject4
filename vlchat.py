@@ -75,7 +75,6 @@ class VlcSender(threading.Thread):
             time.sleep(0.2)
 
 
-getopt.getopt()
 config = json.load(open("config.JSON"))
 s = serial.Serial(config["path"], 115200, timeout=1)  # opens a serial port (resets the device!)
 time.sleep(2)  # give the device some time to startup (2 seconds)
